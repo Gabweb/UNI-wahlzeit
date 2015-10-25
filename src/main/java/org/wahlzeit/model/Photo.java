@@ -123,6 +123,12 @@ public class Photo extends DataObject {
 	protected String ending = "jpg";
 	
 	/**
+	 * Location
+	 */
+	
+	protected Coordinate location = null;
+	
+	/**
 	 *
 	 */
 	//TODO: change it to a single long
@@ -417,5 +423,14 @@ public class Photo extends DataObject {
 	public void setNoNewPraise() {
 		noVotesAtLastNotification = noVotes;
 		incWriteCount();
+	}
+	
+	public void setLocation(Coordinate in) {
+		location = in;
+		incWriteCount();
+	}
+	
+	public Coordinate getLocation() {
+		return location;
 	}
 }
