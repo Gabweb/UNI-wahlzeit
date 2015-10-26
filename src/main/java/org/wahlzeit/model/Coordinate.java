@@ -20,8 +20,12 @@ public class Coordinate {
 	}
 	
 	public Coordinate(double lat, double lon) {
-		setLatitude(lat);
-		setLongitude(lon);		
+		if( Double.isNaN(lon) )
+			throw new IllegalArgumentException("bad longitude");
+		if( Double.isNaN(lat) )
+			throw new IllegalArgumentException("bad longitude");
+		latitude = lat;
+		longitude = lon;
 	}
 	
 	public double getLatitude() {
