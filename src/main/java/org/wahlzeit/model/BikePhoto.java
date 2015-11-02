@@ -1,5 +1,8 @@
 package org.wahlzeit.model;
 
+import com.googlecode.objectify.annotation.Subclass;
+
+@Subclass
 public class BikePhoto extends Photo {
 
 	private String category = "Unknown"; // Maintainbike, Rennrad, Fixie, etc.
