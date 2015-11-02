@@ -16,7 +16,7 @@ public class CoordinateTest {
 	@Before
 	public void initCoordinate() {
 		co1 = new Coordinate();
-		co2 = new Coordinate();
+		co2 = new Coordinate(3,4);
 	}
 	
 	@Test
@@ -24,25 +24,15 @@ public class CoordinateTest {
 		assertNotNull(co1);
 		assertNotNull(co2);
 
-		coordinatesEquals(co1, co2);
-		coordinatesEquals(co1, new Coordinate(0,0));
+		assertTrue(co1.equals(new Coordinate(0,0)));
 		
-		Coordinate co3 = new Coordinate(1,2);
+		co1.setLatitude(3);
+		co1.setLongitude(4);
 		
-		coordinatesEquals(co3, new Coordinate(1,2));
+		assertEquals(3, co1.getLatitude(), 0.001);
+		assertEquals(4, co1.getLongitude(), 0.001);
 		
-		co2.setLatitude(1);
-		co2.setLongitude(2);
-		
-		assertEquals(co2.getLatitude(), 1, 0.001);
-		assertEquals(co2.getLongitude(), 2, 0.001);
-		
-		coordinatesEquals(co3, co2);
-	}
-	
-	private void coordinatesEquals(Coordinate one, Coordinate two) {
-		assertEquals(one.getLatitude(), two.getLatitude(), 0.001);
-		assertEquals(one.getLongitude(), two.getLongitude(), 0.001);
+		assertTrue(co1.equals(co2));
 	}
 	
 	@Test
@@ -130,24 +120,25 @@ public class CoordinateTest {
 	@Test
 	public void testDistance() {
 		
-		assertEquals(co1.getLatitudinalDistance(co2), 0, 0.001);
-		assertEquals(co1.getLongitudinalDistance(co2), 0, 0.001);
+		assertEquals(0, co1.getLatitudinalDistance(co1), 0.001);
+		assertEquals(0, co1.getLongitudinalDistance(co1), 0.001);
 		
 		Coordinate co3 = new Coordinate(20,20);
 		
-		assertEquals(co1.getLatitudinalDistance(co3), 20, 0.001);
-		assertEquals(co1.getLongitudinalDistance(co3), 20, 0.001);
-		assertEquals(co3.getLatitudinalDistance(co1), 20, 0.001);
-		assertEquals(co3.getLongitudinalDistance(co1), 20, 0.001);
+		assertEquals(20, co1.getLatitudinalDistance(co3), 0.001);
+		assertEquals(20, co1.getLongitudinalDistance(co3), 0.001);
+		assertEquals(20, co3.getLatitudinalDistance(co1), 0.001);
+		assertEquals(20, co3.getLongitudinalDistance(co1), 0.001);
 		
 		Coordinate co4 = new Coordinate(-20,-20);
 		
-		assertEquals(co1.getLatitudinalDistance(co3), 20, 0.001);
-		assertEquals(co1.getLongitudinalDistance(co3), 20, 0.001);
+		assertEquals(20, co1.getLatitudinalDistance(co3), 0.001);
+		assertEquals(20, co1.getLongitudinalDistance(co3), 0.001);
 		
-		coordinatesEquals(co1.getDistance(co3), new Coordinate(20,20));
-		coordinatesEquals(co3.getDistance(co4), new Coordinate(40,40));
-		coordinatesEquals(co4.getDistance(co3), new Coordinate(40,40));
+		assertEquals(Math.sqrt(800), co1.getDistance(co3), 0.001);
+		assertEquals(Math.sqrt(3200), co4.getDistance(co3), 0.001);
+		assertEquals(Math.sqrt(3200), co3.getDistance(co4), 0.001);
+
 	}
 
 }

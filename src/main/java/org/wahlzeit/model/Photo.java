@@ -126,7 +126,7 @@ public class Photo extends DataObject {
 	 * Location
 	 */
 	
-	protected Coordinate location = null;
+	protected Location location = null;
 	
 	/**
 	 *
@@ -425,12 +425,12 @@ public class Photo extends DataObject {
 		incWriteCount();
 	}
 	
-	public void setLocation(Coordinate in) {
+	public void setLocation(Location in) {
 		location = in;
 		incWriteCount();
 	}
 	
-	public Coordinate getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 }
