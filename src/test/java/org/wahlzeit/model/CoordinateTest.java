@@ -9,136 +9,31 @@ import org.junit.Test;
 
 public class CoordinateTest {
 
-	private Coordinate co1;
-	private Coordinate co2;
-
-
+	private Coordinate c0;
+	private Coordinate c1;
+	private Coordinate c2;
+	
 	@Before
 	public void initCoordinate() {
-		co1 = new Coordinate();
-		co2 = new Coordinate(3,4);
+		c0 = new SphericCoordinate(88, 170);
+		c1 = AbstractCoordinate.asCartesianCoordinate(c0);
+		c2 = AbstractCoordinate.asSphericCoordinate(c1);
 	}
 	
 	@Test
-	public void testConstructor() {
-		assertNotNull(co1);
-		assertNotNull(co2);
-
-		assertTrue(co1.equals(new Coordinate(0,0)));
-		
-		co1.setLatitude(3);
-		co1.setLongitude(4);
-		
-		assertEquals(3, co1.getLatitude(), 0.001);
-		assertEquals(4, co1.getLongitude(), 0.001);
-		
-		assertTrue(co1.equals(co2));
+	public void testConversionAndIsEquals() {		
+		assertTrue(c0.isEqual(c2));
+		assertTrue(c2.isEqual(c1));
+		assertTrue(c1.isEqual(c2));
 	}
 	
-	@Test
-	public void testIllegalArgument() {
-		boolean fails;
-		
-		//Latitude
-		fails = false;
-		try {
-			new Coordinate(90.1,0);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-
-		fails = false;
-		try {
-			new Coordinate(-90.1,0);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-		
-		fails = false;
-		try {
-			new Coordinate(Double.NaN,0);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-		
-		//Longitude
-		fails = false;
-		try {
-			new Coordinate(0,180.1);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-
-		fails = false;
-		try {
-			new Coordinate(0, 180.1);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-		
-		fails = false;
-		try {
-			new Coordinate(0, Double.NaN);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-		
-		//Latitude
-		fails = false;
-		try {
-			co1.getLatitudinalDistance(null);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-		
-		//Longitude
-		fails = false;
-		try {
-			co1.getLongitudinalDistance(null);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-		
-		//Distance
-		fails = false;
-		try {
-			co1.getDistance(null);
-		} catch (IllegalArgumentException e) {
-		   fails = true;
-		} 
-		assertTrue(fails);
-	}
-	
-	@Test
-	public void testDistance() {
-		
-		assertEquals(0, co1.getLatitudinalDistance(co1), 0.001);
-		assertEquals(0, co1.getLongitudinalDistance(co1), 0.001);
-		
-		Coordinate co3 = new Coordinate(20,20);
-		
-		assertEquals(20, co1.getLatitudinalDistance(co3), 0.001);
-		assertEquals(20, co1.getLongitudinalDistance(co3), 0.001);
-		assertEquals(20, co3.getLatitudinalDistance(co1), 0.001);
-		assertEquals(20, co3.getLongitudinalDistance(co1), 0.001);
-		
-		Coordinate co4 = new Coordinate(-20,-20);
-		
-		assertEquals(20, co1.getLatitudinalDistance(co3), 0.001);
-		assertEquals(20, co1.getLongitudinalDistance(co3), 0.001);
-		
-		assertEquals(Math.sqrt(800), co1.getDistance(co3), 0.001);
-		assertEquals(Math.sqrt(3200), co4.getDistance(co3), 0.001);
-		assertEquals(Math.sqrt(3200), co3.getDistance(co4), 0.001);
-
+	/*
+	 * Test if getDistance works with 2 different Coordinate types.
+	 */
+	public void testGetDistance() {
+		assertEquals( 0, c0.getDistance(c0), 0.0000000001 );
+		assertEquals( 0, c0.getDistance(c1), 0.0000000001 );
+		assertEquals( 0, c1.getDistance(c0), 0.0000000001 );
 	}
 
 }
