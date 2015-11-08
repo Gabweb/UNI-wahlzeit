@@ -26,6 +26,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setX(double x) {
+		assertNotNaN(x);
 		this.x = x;
 	}
 
@@ -40,6 +41,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setY(double y) {
+		assertNotNaN(y);
 		this.y = y;
 	}
 
@@ -54,6 +56,7 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setZ(double z) {
+		assertNotNaN(z);
 		this.z = z;
 	}
 
@@ -108,5 +111,14 @@ public class CartesianCoordinate extends AbstractCoordinate {
 		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
 			return false;
 		return true;
+	}
+	
+	/*
+	 * @methodtype assertion
+	 */
+	private void assertNotNaN(double in) throws IllegalArgumentException {
+		if( Double.isNaN(in) ) {
+			throw new IllegalArgumentException();
+		}
 	}
 }

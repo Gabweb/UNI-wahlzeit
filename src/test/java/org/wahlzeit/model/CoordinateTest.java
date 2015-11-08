@@ -34,6 +34,21 @@ public class CoordinateTest {
 		assertEquals( 0, c0.getDistance(c0), 0.0000000001 );
 		assertEquals( 0, c0.getDistance(c1), 0.0000000001 );
 		assertEquals( 0, c1.getDistance(c0), 0.0000000001 );
+		
+		Coordinate location = new SphericCoordinate(52.517, 13.40);
+		Coordinate location2 = new SphericCoordinate(35.70, 139.767);
+		Coordinate location3 = new SphericCoordinate(40.712778, -74.005833);
+		assertEquals(8918, location.getDistance(location2), 1);
+		assertEquals(8918, location2.getDistance(location), 1);
+		
+		Coordinate lo = AbstractCoordinate.asCartesianCoordinate(location);
+		Coordinate lo2 = AbstractCoordinate.asCartesianCoordinate(location2);
+		Coordinate lo3 = AbstractCoordinate.asCartesianCoordinate(location3);
+		assertEquals(8918, lo.getDistance(lo2), 1);
+		assertEquals(8918, lo2.getDistance(lo), 1);
+		
+		assertEquals(8918, location.getDistance(lo2), 1);
+		assertEquals(8918, lo2.getDistance(location), 1);
 	}
 
 }

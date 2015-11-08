@@ -51,20 +51,27 @@ public class SphericCoordinate extends AbstractCoordinate {
 	@Override
 	public double getDistance(Coordinate in) {
 		assertValidCoordinate(in);
-		
+
 		SphericCoordinate tmp = asSphericCoordinate(in);
-		//TODO
-		return Math.sqrt(Math.pow(getLatitudinalDistance(in), 2) + Math.pow(getLongitudinalDistance(in), 2));
+		
+		double phi1 = Math.toRadians(latitude);
+		double phi2 = Math.toRadians(((SphericCoordinate) tmp).getLatitude());
+		double deltaPhi = Math.toRadians(getLatitudinalDistance(tmp));
+		double deltaLambda = Math.toRadians(getLongitudinalDistance(tmp));
+		double ret = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2)
+				+ Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+		double angle = 2 * Math.asin(Math.sqrt(ret));
+		return Math.abs(EARTHRADIUS * angle);
 	}
-	
+
 	/*
 	 * @methodtype query
 	 */
-	public double getLatitudinalDistance(Coordinate in) {	
+	public double getLatitudinalDistance(Coordinate in) {
 		assertValidCoordinate(in);
-		
+
 		SphericCoordinate tmp = asSphericCoordinate(in);
-		
+
 		return Math.abs(latitude - tmp.getLatitude());
 	}
 
@@ -73,9 +80,9 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 */
 	public double getLongitudinalDistance(Coordinate in) {
 		assertValidCoordinate(in);
-		
+
 		SphericCoordinate tmp = asSphericCoordinate(in);
-		
+
 		return Math.abs(longitude - tmp.getLongitude());
 	}
 
