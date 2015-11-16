@@ -4,14 +4,23 @@ public class SphericCoordinate extends AbstractCoordinate {
 
 	private double latitude;
 	private double longitude;
+	private double radius;
 
 	/*
 	 * @methodtype constructor
 	 */
 	public SphericCoordinate(double lat, double lon) {
+		this(lat, lon, EARTHRADIUS);
+	}
+
+	/*
+	 * @methodtype constructor
+	 */
+	public SphericCoordinate(double lat, double lon, double radius) {
 		setLatitude(lat);
 		setLongitude(lon);
-	}
+		this.radius = radius;
+	}	
 
 	/*
 	 * @methodtype get
@@ -26,7 +35,14 @@ public class SphericCoordinate extends AbstractCoordinate {
 	public double getLongitude() {
 		return longitude;
 	}
-
+	
+	/*
+	 * @methodtype get
+	 */
+	public double getRadius() {
+		return radius;
+	}
+	
 	/*
 	 * @methodtype set
 	 */
