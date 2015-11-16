@@ -1,5 +1,5 @@
-/**
- * 
+/*
+ * Interface for all Coordinate classes
  */
 package org.wahlzeit.model;
 

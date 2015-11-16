@@ -5,7 +5,7 @@ public class Location {
 	private String name;
 	public Coordinate coordinate;
 
-	/*
+	/**
 	 * @methodtype constructor
 	 */
 	public Location() {

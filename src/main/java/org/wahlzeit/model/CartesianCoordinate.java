@@ -1,5 +1,11 @@
+/*
+ * Cartesian Coordinate class that works with classic x,y,z
+ */
 package org.wahlzeit.model;
 
+import com.googlecode.objectify.annotation.Subclass;
+
+@Subclass
 public class CartesianCoordinate extends AbstractCoordinate {
 
 	private double x;

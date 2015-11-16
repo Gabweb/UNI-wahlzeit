@@ -1,5 +1,11 @@
+/*
+ * Spheric cordinate class that works with lat and long
+ */
 package org.wahlzeit.model;
 
+import com.googlecode.objectify.annotation.Subclass;
+
+@Subclass
 public class SphericCoordinate extends AbstractCoordinate {
 
 	private double latitude;

@@ -1,3 +1,7 @@
+/*
+ * Abstract Coordinate class that implements some functions used by the subclasses
+ */
+
 package org.wahlzeit.model;
 
 public abstract class AbstractCoordinate implements Coordinate {
