@@ -25,6 +25,8 @@ public class SphericCoordinate extends AbstractCoordinate {
 	public SphericCoordinate(double lat, double lon, double radius) {
 		setLatitude(lat);
 		setLongitude(lon);
+		
+		assertValidRadius(radius);
 		this.radius = radius;
 	}	
 
@@ -53,8 +55,7 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setLatitude(double lat) throws IllegalArgumentException {
-		if (lat > 90 || lat < -90 || Double.isNaN(lat))
-			throw new IllegalArgumentException("bad latitude");
+		assertValidLatitude(lat);
 		latitude = lat;
 	}
 
@@ -62,28 +63,28 @@ public class SphericCoordinate extends AbstractCoordinate {
 	 * @methodtype set
 	 */
 	public void setLongitude(double lon) throws IllegalArgumentException {
-		if (lon > 180 || lon < -180 || Double.isNaN(lon))
-			throw new IllegalArgumentException("bad longitude");
+		assertValidLongitude(lon);
 		longitude = lon;
 	}
 
 	/*
-	 * @methodtype query
+	 * @methodtype helper
 	 */
-	@Override
-	public double getDistance(Coordinate in) {
-		assertValidCoordinate(in);
-
-		SphericCoordinate tmp = asSphericCoordinate(in);
+	protected double doGetDistance(Coordinate in) {
+		SphericCoordinate tmp = in.asSphericCoordinate();
 		
 		double phi1 = Math.toRadians(latitude);
 		double phi2 = Math.toRadians(((SphericCoordinate) tmp).getLatitude());
 		double deltaPhi = Math.toRadians(getLatitudinalDistance(tmp));
 		double deltaLambda = Math.toRadians(getLongitudinalDistance(tmp));
-		double ret = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2)
+		double tmp2 = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2)
 				+ Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
-		double angle = 2 * Math.asin(Math.sqrt(ret));
-		return Math.abs(EARTHRADIUS * angle);
+		double angle = 2 * Math.asin(Math.sqrt(tmp2));
+		double ret = Math.abs(EARTHRADIUS * angle);
+		
+		assert(ret >= 0);	
+		
+		return ret;
 	}
 
 	/*
@@ -92,9 +93,12 @@ public class SphericCoordinate extends AbstractCoordinate {
 	public double getLatitudinalDistance(Coordinate in) {
 		assertValidCoordinate(in);
 
-		SphericCoordinate tmp = asSphericCoordinate(in);
+		SphericCoordinate tmp = in.asSphericCoordinate();
+		double ret = Math.abs(latitude - tmp.getLatitude());
+		
+		assert(ret >= 0 && ret <= 180);
 
-		return Math.abs(latitude - tmp.getLatitude());
+		return ret;
 	}
 
 	/*
@@ -103,9 +107,40 @@ public class SphericCoordinate extends AbstractCoordinate {
 	public double getLongitudinalDistance(Coordinate in) {
 		assertValidCoordinate(in);
 
-		SphericCoordinate tmp = asSphericCoordinate(in);
+		SphericCoordinate tmp = in.asSphericCoordinate();
+		double ret = Math.abs(longitude - tmp.getLongitude());
+		
+		assert(ret >= 0 && ret <= 360);
 
-		return Math.abs(longitude - tmp.getLongitude());
+		return ret;
+	}
+	
+	/*
+	 * @methodtype conversion
+	 */
+	public SphericCoordinate asSphericCoordinate() throws IllegalArgumentException {
+		SphericCoordinate ret = (SphericCoordinate)this;
+
+		ret.assertClassInvariants();
+
+		return ret;
+	}
+	
+	/*
+	 * @methodtype conversion
+	 */
+	public CartesianCoordinate asCartesianCoordinate() throws IllegalArgumentException {
+		SphericCoordinate tmp = (SphericCoordinate)this;
+	    double lat = Math.toRadians( tmp.getLatitude() );
+	    double lon = Math.toRadians( tmp.getLongitude() );
+	    double x = EARTHRADIUS * Math.cos(lat)*Math.cos(lon);
+	    double y = EARTHRADIUS * Math.cos(lat)*Math.sin(lon);
+	    double z = EARTHRADIUS * Math.sin(lat);
+	    CartesianCoordinate ret = new CartesianCoordinate(x, y, z);
+
+		ret.assertClassInvariants();
+		
+		return ret;
 	}
 
 	/*
@@ -142,4 +177,45 @@ public class SphericCoordinate extends AbstractCoordinate {
 		return true;
 	}
 
+	
+	/*
+	 * @methodtype assertion
+	 */
+	public void assertClassInvariants() throws IllegalArgumentException {
+		try {
+			assertValidLatitude(this.latitude);
+			assertValidLongitude(this.longitude);
+			assertValidRadius(this.radius);
+		}
+		catch (IllegalArgumentException e) {
+			throw new IllegalStateException();
+		}
+	}
+	
+	/*
+	 * @methodtype assertion
+	 */
+	private void assertValidLatitude(double lat) throws IllegalArgumentException {
+		assertNotNaN(lat);
+		if (lat > 90 || lat < -90)
+			throw new IllegalArgumentException("bad latitude");		
+	}
+	
+	/*
+	 * @methodtype assertion
+	 */
+	private void assertValidLongitude(double lon) throws IllegalArgumentException {
+		assertNotNaN(lon);
+		if (lon > 180 || lon < -180)
+			throw new IllegalArgumentException("bad longitude");
+	}
+	
+	/*
+	 * @methodtype assertion
+	 */
+	private void assertValidRadius(double radius) throws IllegalArgumentException {
+		assertNotNaN(radius);
+		if (radius <= 0)
+			throw new IllegalArgumentException("bad radius");
+	}
 }

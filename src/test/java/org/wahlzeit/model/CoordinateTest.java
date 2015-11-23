@@ -16,8 +16,8 @@ public class CoordinateTest {
 	@Before
 	public void initCoordinate() {
 		c0 = new SphericCoordinate(88, 170);
-		c1 = AbstractCoordinate.asCartesianCoordinate(c0);
-		c2 = AbstractCoordinate.asSphericCoordinate(c1);
+		c1 = c0.asCartesianCoordinate();
+		c2 = c1.asSphericCoordinate();
 	}
 	
 	@Test
@@ -41,9 +41,9 @@ public class CoordinateTest {
 		assertEquals(8918, location.getDistance(location2), 1);
 		assertEquals(8918, location2.getDistance(location), 1);
 		
-		Coordinate lo = AbstractCoordinate.asCartesianCoordinate(location);
-		Coordinate lo2 = AbstractCoordinate.asCartesianCoordinate(location2);
-		Coordinate lo3 = AbstractCoordinate.asCartesianCoordinate(location3);
+		Coordinate lo = location.asCartesianCoordinate();
+		Coordinate lo2 = location2.asCartesianCoordinate();
+		Coordinate lo3 = location3.asCartesianCoordinate();
 		assertEquals(8918, lo.getDistance(lo2), 1);
 		assertEquals(8918, lo2.getDistance(lo), 1);
 		

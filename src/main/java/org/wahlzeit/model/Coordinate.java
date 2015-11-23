@@ -14,4 +14,14 @@ public interface Coordinate {
 	 * @methodtype boolean query
 	 */
 	public boolean isEqual(Coordinate in);
+	
+	/*
+	 * @methodtype conversion
+	 */
+	public CartesianCoordinate asCartesianCoordinate();
+	
+	/*
+	 * @methodtype conversion
+	 */
+	public SphericCoordinate asSphericCoordinate();
 }

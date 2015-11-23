@@ -16,9 +16,9 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	 * @methodtype constructor
 	 */
 	public CartesianCoordinate(double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		setX(x);
+		setY(y);
+		setZ(z);
 	}
 	
 	/*
@@ -67,18 +67,47 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	}
 
 	/*
-	 * @methodtype query
+	 * @methodtype helper
 	 */
-	@Override
-	public double getDistance(Coordinate in) {
-		assertValidCoordinate(in);
-		
-		CartesianCoordinate tmp = asCartesianCoordinate(in);
+	protected double doGetDistance(Coordinate in) {
+		CartesianCoordinate tmp = in.asCartesianCoordinate();
 		
 		double distance = Math.sqrt( Math.pow(x - tmp.getX(), 2) + Math.pow(y - tmp.getY(), 2) + Math.pow(z - tmp.getZ(), 2) );
 		double w = 2 * Math.asin( (distance/2)/EARTHRADIUS );
 		
+		assert(w >= 0);
+		
 		return w * EARTHRADIUS;
+	}
+	
+	/*
+	 * @methodtype conversion
+	 */
+	public SphericCoordinate asSphericCoordinate() {
+		SphericCoordinate ret;
+
+		CartesianCoordinate tmp = (CartesianCoordinate)this;
+		double r = Math.sqrt(tmp.getX() * tmp.getX() + tmp.getY() * tmp.getY() + tmp.getZ()* tmp.getZ()); 
+		double lat = Math.toDegrees(Math.asin(tmp.getZ()/r));
+		double lon = Math.toDegrees(Math.atan2(tmp.getY(), tmp.getX()));
+		
+		ret = new SphericCoordinate(lat,lon);
+
+		assert( ret != null );
+		ret.assertClassInvariants();
+		
+		return ret;
+	}
+	
+	/*
+	 * @methodtype conversion
+	 */
+	public CartesianCoordinate asCartesianCoordinate() {
+		CartesianCoordinate ret = (CartesianCoordinate)this;
+		
+		ret.assertClassInvariants();
+
+		return ret;
 	}
 	
 	/*
@@ -122,9 +151,14 @@ public class CartesianCoordinate extends AbstractCoordinate {
 	/*
 	 * @methodtype assertion
 	 */
-	private void assertNotNaN(double in) throws IllegalArgumentException {
-		if( Double.isNaN(in) ) {
-			throw new IllegalArgumentException();
+	public void assertClassInvariants() throws IllegalStateException {
+		try {
+			assertNotNaN(this.x);
+			assertNotNaN(this.y);
+			assertNotNaN(this.z);
+		}
+		catch (IllegalArgumentException e) {
+			throw new IllegalStateException();
 		}
 	}
 }
