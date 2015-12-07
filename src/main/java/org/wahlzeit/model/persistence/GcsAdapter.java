@@ -32,6 +32,7 @@ import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import org.wahlzeit.services.LogBuilder;
 import org.wahlzeit.services.SysConfig;
+import org.wahlzeit.utils.Pattern;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +48,7 @@ import java.util.logging.Logger;
  * 
  * @review
  */
+@Pattern (name = "Adapter", participants = {"ImageStorage", "DatastoreAdapter", "OfyService"})
 public class GcsAdapter extends ImageStorage {
 
 	private static final Logger log = Logger.getLogger(GcsAdapter.class.getName());
