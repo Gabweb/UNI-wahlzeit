@@ -4,6 +4,9 @@
 
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.Pattern;
+
+@Pattern(name = "Template", participants = {"AbstactCoordinate", "CartesianCoordinate", "SphericCoordinate"})
 public abstract class AbstractCoordinate implements Coordinate {
 	protected final static double EARTHRADIUS = 6371;
 	/*

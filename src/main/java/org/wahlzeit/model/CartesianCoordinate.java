@@ -3,8 +3,11 @@
  */
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.Pattern;
+
 import com.googlecode.objectify.annotation.Subclass;
 
+@Pattern(name = "Template", participants = {"AbstactCoordinate", "CartesianCoordinate", "SphericCoordinate"})
 @Subclass
 public class CartesianCoordinate extends AbstractCoordinate {
 
