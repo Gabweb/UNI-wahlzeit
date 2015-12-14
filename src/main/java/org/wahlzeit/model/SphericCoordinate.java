@@ -12,27 +12,49 @@ import com.googlecode.objectify.annotation.Subclass;
 @Subclass
 public class SphericCoordinate extends AbstractCoordinate {
 
-	private double latitude;
-	private double longitude;
-	private double radius;
+	private final double latitude;
+	private final double longitude;
+	private final double radius;
 
 	/*
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate(double lat, double lon) {
+	private SphericCoordinate(double lat, double lon) {
 		this(lat, lon, EARTHRADIUS);
 	}
 
 	/*
 	 * @methodtype constructor
 	 */
-	public SphericCoordinate(double lat, double lon, double radius) {
-		setLatitude(lat);
-		setLongitude(lon);
+	private SphericCoordinate(double lat, double lon, double radius) {
+		assertValidLatitude(lat);
+		latitude = lat;
+		
+		assertValidLongitude(lon);
+		longitude = lon;
 		
 		assertValidRadius(radius);
 		this.radius = radius;
 	}	
+	
+	/*
+	 * @methodtype factory method
+	 */
+	public static SphericCoordinate getCoordinate(double lat, double lon) {
+		SphericCoordinate tmp = new SphericCoordinate(lat, lon);
+		int hashCode = tmp.hashCode();
+		Coordinate result = allCoordinates.get(hashCode);
+		if (result == null) {
+			synchronized (allCoordinates) {
+				result = allCoordinates.get(hashCode);
+				if (result == null) {
+					result = tmp;
+					allCoordinates.put(hashCode, result);
+				}
+			}
+		}
+		return (SphericCoordinate)result;
+	}
 
 	/*
 	 * @methodtype get
@@ -56,49 +78,33 @@ public class SphericCoordinate extends AbstractCoordinate {
 	}
 	
 	/*
-	 * @methodtype set
+	 * @methodtype get
 	 */
-	public void setLatitude(double lat) throws IllegalArgumentException {
-		assertValidLatitude(lat);
-		latitude = lat;
+	public double getX() {
+		return EARTHRADIUS * Math.cos(Math.toRadians( getLatitude() ))*Math.cos(Math.toRadians( getLongitude() ));
 	}
 
 	/*
-	 * @methodtype set
+	 * @methodtype get
 	 */
-	public void setLongitude(double lon) throws IllegalArgumentException {
-		assertValidLongitude(lon);
-		longitude = lon;
+	public double getY() {
+		return EARTHRADIUS * Math.cos(Math.toRadians( getLatitude() ))*Math.sin(Math.toRadians( getLongitude() ));
 	}
 
 	/*
-	 * @methodtype helper
+	 * @methodtype get
 	 */
-	protected double doGetDistance(Coordinate in) {
-		SphericCoordinate tmp = in.asSphericCoordinate();
-		
-		double phi1 = Math.toRadians(latitude);
-		double phi2 = Math.toRadians(((SphericCoordinate) tmp).getLatitude());
-		double deltaPhi = Math.toRadians(getLatitudinalDistance(tmp));
-		double deltaLambda = Math.toRadians(getLongitudinalDistance(tmp));
-		double tmp2 = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2)
-				+ Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
-		double angle = 2 * Math.asin(Math.sqrt(tmp2));
-		double ret = Math.abs(EARTHRADIUS * angle);
-		
-		assert(ret >= 0);	
-		
-		return ret;
+	public double getZ() {
+		return EARTHRADIUS * Math.sin(Math.toRadians( getLatitude() ));
 	}
 
 	/*
 	 * @methodtype query
 	 */
-	public double getLatitudinalDistance(Coordinate in) {
+	public double getLatitudinalDistance(SphericCoordinate in) {
 		assertValidCoordinate(in);
 
-		SphericCoordinate tmp = in.asSphericCoordinate();
-		double ret = Math.abs(latitude - tmp.getLatitude());
+		double ret = Math.abs(latitude - in.getLatitude());
 		
 		assert(ret >= 0 && ret <= 180);
 
@@ -108,77 +114,14 @@ public class SphericCoordinate extends AbstractCoordinate {
 	/*
 	 * @methodtype query
 	 */
-	public double getLongitudinalDistance(Coordinate in) {
+	public double getLongitudinalDistance(SphericCoordinate in) {
 		assertValidCoordinate(in);
 
-		SphericCoordinate tmp = in.asSphericCoordinate();
-		double ret = Math.abs(longitude - tmp.getLongitude());
+		double ret = Math.abs(longitude - in.getLongitude());
 		
 		assert(ret >= 0 && ret <= 360);
 
 		return ret;
-	}
-	
-	/*
-	 * @methodtype conversion
-	 */
-	public SphericCoordinate asSphericCoordinate() throws IllegalArgumentException {
-		SphericCoordinate ret = (SphericCoordinate)this;
-
-		ret.assertClassInvariants();
-
-		return ret;
-	}
-	
-	/*
-	 * @methodtype conversion
-	 */
-	public CartesianCoordinate asCartesianCoordinate() throws IllegalArgumentException {
-		SphericCoordinate tmp = (SphericCoordinate)this;
-	    double lat = Math.toRadians( tmp.getLatitude() );
-	    double lon = Math.toRadians( tmp.getLongitude() );
-	    double x = EARTHRADIUS * Math.cos(lat)*Math.cos(lon);
-	    double y = EARTHRADIUS * Math.cos(lat)*Math.sin(lon);
-	    double z = EARTHRADIUS * Math.sin(lat);
-	    CartesianCoordinate ret = new CartesianCoordinate(x, y, z);
-
-		ret.assertClassInvariants();
-		
-		return ret;
-	}
-
-	/*
-	 * @methodtype comparison
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(latitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(longitude);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
-
-	/*
-	 * @methodtype boolean query
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof SphericCoordinate))
-			return false;
-		SphericCoordinate other = (SphericCoordinate) obj;
-		if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude))
-			return false;
-		if (Double.doubleToLongBits(longitude) != Double.doubleToLongBits(other.longitude))
-			return false;
-		return true;
 	}
 
 	

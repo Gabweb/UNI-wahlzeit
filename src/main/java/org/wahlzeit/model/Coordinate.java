@@ -16,12 +16,17 @@ public interface Coordinate {
 	public boolean isEqual(Coordinate in);
 	
 	/*
-	 * @methodtype conversion
+	 * @methodtype get
 	 */
-	public CartesianCoordinate asCartesianCoordinate();
+	public double getX();
 	
 	/*
-	 * @methodtype conversion
+	 * @methodtype get
 	 */
-	public SphericCoordinate asSphericCoordinate();
+	public double getY();
+	
+	/*
+	 * @methodtype get
+	 */
+	public double getZ();
 }

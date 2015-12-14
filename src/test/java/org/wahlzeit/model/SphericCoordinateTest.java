@@ -14,8 +14,8 @@ public class SphericCoordinateTest {
 
 	@Before
 	public void initCoordinate() {
-		co1 = new SphericCoordinate(0, 0);
-		co2 = new SphericCoordinate(3, 4);
+		co1 = SphericCoordinate.getCoordinate(0, 0);
+		co2 = SphericCoordinate.getCoordinate(3, 4);
 	}
 
 	@Test
@@ -23,15 +23,9 @@ public class SphericCoordinateTest {
 		assertNotNull(co1);
 		assertNotNull(co2);
 
-		assertTrue(co1.equals(new SphericCoordinate(0, 0)));
+		assertTrue(co1.equals(SphericCoordinate.getCoordinate(0, 0)));
 
-		co1.setLatitude(3);
-		co1.setLongitude(4);
-
-		assertEquals(3, co1.getLatitude(), 0.001);
-		assertEquals(4, co1.getLongitude(), 0.001);
-
-		assertTrue(co1.equals(co2));
+		assertTrue(!co1.equals(co2));
 	}
 
 	@Test
@@ -41,7 +35,7 @@ public class SphericCoordinateTest {
 		// Latitude
 		fails = false;
 		try {
-			new SphericCoordinate(90.1, 0);
+			SphericCoordinate.getCoordinate(90.1, 0);
 		} catch (IllegalArgumentException e) {
 			fails = true;
 		}
@@ -49,7 +43,7 @@ public class SphericCoordinateTest {
 
 		fails = false;
 		try {
-			new SphericCoordinate(-90.1, 0);
+			SphericCoordinate.getCoordinate(-90.1, 0);
 		} catch (IllegalArgumentException e) {
 			fails = true;
 		}
@@ -57,7 +51,7 @@ public class SphericCoordinateTest {
 
 		fails = false;
 		try {
-			new SphericCoordinate(Double.NaN, 0);
+			SphericCoordinate.getCoordinate(Double.NaN, 0);
 		} catch (IllegalArgumentException e) {
 			fails = true;
 		}
@@ -66,7 +60,7 @@ public class SphericCoordinateTest {
 		// Longitude
 		fails = false;
 		try {
-			new SphericCoordinate(0, 180.1);
+			SphericCoordinate.getCoordinate(0, 180.1);
 		} catch (IllegalArgumentException e) {
 			fails = true;
 		}
@@ -74,7 +68,7 @@ public class SphericCoordinateTest {
 
 		fails = false;
 		try {
-			new SphericCoordinate(0, 180.1);
+			SphericCoordinate.getCoordinate(0, 180.1);
 		} catch (IllegalArgumentException e) {
 			fails = true;
 		}
@@ -82,7 +76,7 @@ public class SphericCoordinateTest {
 
 		fails = false;
 		try {
-			new SphericCoordinate(0, Double.NaN);
+			SphericCoordinate.getCoordinate(0, Double.NaN);
 		} catch (IllegalArgumentException e) {
 			fails = true;
 		}
@@ -118,9 +112,9 @@ public class SphericCoordinateTest {
 
 	@Test
 	public void testDistance() {
-		Coordinate location = new SphericCoordinate(52.517, 13.40);
-		Coordinate location2 = new SphericCoordinate(35.70, 139.767);
-		Coordinate location3 = new SphericCoordinate(40.712778, -74.005833);
+		Coordinate location = SphericCoordinate.getCoordinate(52.517, 13.40);
+		Coordinate location2 = SphericCoordinate.getCoordinate(35.70, 139.767);
+		Coordinate location3 = SphericCoordinate.getCoordinate(40.712778, -74.005833);
 		assertEquals(8918, location.getDistance(location2), 1);
 		assertEquals(8918, location2.getDistance(location), 1);
 		assertEquals(6385, location.getDistance(location3), 1);
